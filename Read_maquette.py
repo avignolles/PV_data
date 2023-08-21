@@ -75,8 +75,8 @@ def mesure_temps():
 
 def Creation_save():
     cpt = 0
-    fileNameBase = r"/home/avignolles/Desktop/N7/Projet_Long_2023/Recup_data/Python/data"
-    fileName = r"/home/avignolles/Desktop/N7/Projet_Long_2023/Recup_data/Python/data.txt"
+    fileNameBase = r"/home/avignolles/Desktop/N7/Projet_Long_2023/PV_data/data"
+    fileName = r"/home/avignolles/Desktop/N7/Projet_Long_2023/PV_data/data.txt"
     while os.path.exists(fileName):
         cpt += 1
         fileName = fileNameBase + str(cpt) + ".txt"
