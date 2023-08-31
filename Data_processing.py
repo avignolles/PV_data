@@ -13,7 +13,7 @@ import time  # gestion du temps
 import pylab
 from pylab import *
 import matplotlib.gridspec as gridspec
-
+import matplotlib.animation as animation
 
 parser = OptionParser(usage='usage: %prog FILE_NAME')
 (options, args) = parser.parse_args()
@@ -31,6 +31,8 @@ V_ampoule_1, V_ampoule2, V_moteur, V_thermo_P1, V_thermo_P2, V_thermo_batterie, 
 theta = V_photo_P1.copy() #just to get the same size as V_photo_P1
 
 
+#Current measured named pannel P1 is actually a measurement of current produced by panel P1 + current produced by panel P2
+Current_P1=Current_P1-Current_P2 
 '''
 #Estimation of the luminosity peak, only right for data59.txt
 debut = 16500
@@ -168,21 +170,117 @@ plt.ylabel('Lum (lux)')
 plt.title('Lum P2 en fonction du temps')
 #xlim(0, 60)
 #ylim(-10, max(10, max(Current_P2)))
-plt.scatter(temps, ShuntVoltage_batterie,s=2)
+plt.scatter(temps, V_photo_P2,s=2)
 plt.grid()
 
 plt.subplot(2, 3, 6)
 plt.xlabel('temps (s)')
 plt.ylabel('Courant (mA)')
-plt.title('Courant batterie en fonction du temps')#remettre P2
+plt.title('Courant P2 en fonction du temps')#remettre P2
+#xlim(0, 60)
+#ylim(-10, max(10, max(Current_P2)))
+plt.scatter(temps, Current_P2,s=2)
+plt.grid()
+
+
+
+plt.show(block = False)
+
+
+plt.figure()
+#charges
+
+plt.subplot(2, 3, 1)
+plt.xlabel('temps (s)')
+plt.ylabel('Amp1)')
+plt.title('Ampoule 1 / temps')
+#xlim(0, 60)
+#ylim(-10, max(10, max(Current_P2)))
+
+#If colored:
+#plt.scatter(temps, V_photo_P1,s=2, c=Couleur)
+
+#If not colored:
+plt.scatter(temps, V_ampoule_1)
+plt.grid()
+
+plt.subplot(2, 3, 2)
+plt.xlabel('temps (s)')
+plt.ylabel('Amp2')
+plt.title('Ampoule2 en fonction du temps')
+#xlim(0, 60)
+#ylim(-10, max(10, max(Current_P2)))
+
+plt.scatter(temps, V_ampoule2,s=2)
+
+
+plt.grid()
+
+plt.subplot(2, 3, 3)
+plt.xlabel('lum P2(lux)')
+plt.ylabel('Mot (V)')
+#xlim(0, 60)
+#ylim(-10, max(10, max(Current_P1)))
+plt.title('Moteur /temps')
+plt.scatter(temps, V_moteur, s=2)
+plt.grid()
+
+plt.subplot(2, 3, 4)
+plt.xlabel('lum P2(lux)')
+plt.ylabel('Courant(mA)')
+#xlim(0, 60)
+#ylim(-10, max(10, max(Current_P1)))
+plt.title('Courant Batterie /temps')
+plt.scatter(temps, Current_batterie, s=2)
+plt.grid()
+
+
+plt.subplot(2, 3, 5)
+plt.xlabel('temps (s)')
+plt.ylabel('Volt (V)')
+plt.title('Shunt voltage en fonction du temps')#remettre P2
+#xlim(0, 60)
+#ylim(-10, max(10, max(Current_P2)))
+plt.scatter(temps, ShuntVoltage_batterie,s=2)
+plt.grid()
+
+
+plt.subplot(2, 3, 6)
+plt.xlabel('temps (s)')
+plt.ylabel('Volt (V)')
+plt.title('Bus Voltage Batterie en fonction du temps')#remettre P2
 #xlim(0, 60)
 #ylim(-10, max(10, max(Current_P2)))
 plt.scatter(temps, BusVoltage_batterie,s=2)
 plt.grid()
 
-
-
 plt.show()
+
+
+#To make the animation of appearing points
+'''
+#xlim(0, 60)
+#ylim(-10, max(10, max(Current_P1)))
+plt.rcParams['animation.ffmpeg_path'] ='/usr/bin/ffmpeg'
+fig = plt.figure()
+plt.xlim(V_photo_P1.min(), V_photo_P1.max())
+plt.ylim(Current_P1.min(), Current_P1.max())
+plt.xlabel('lum P1(lux)')
+plt.ylabel('Current P1 (mA)')
+plt.title('Courrant P1 en fonction de la lum')
+#plt.scatter(V_photo_P1, Current_P1)
+
+graph, = plt.plot([], [], 'o')
+
+def animate(i):
+    graph.set_data(V_photo_P1[:i+1], Current_P1[:i+1])
+    return graph
+
+ani = animation.FuncAnimation(fig, animate,interval=1)
+FFwriter = animation.FFMpegWriter(fps=10)
+ani.save('animation.mp4', writer = FFwriter)
+#plt.show()
+'''
 
 """
 # Création de la figure
